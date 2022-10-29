@@ -7,6 +7,7 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { ECOM_API_URL } from "@env";
 
 const colors = {
   background_color: "#0288d1",
@@ -14,14 +15,38 @@ const colors = {
 
 function Login(props) {
   const [showCompanyName, setShowCompanyName] = React.useState(true);
-  const [showSign_With_Google_Facebook, setShowSign_With_Google_Facebook] =
+  const [showSignGoogleFacebook, setshowSignGoogleFacebook] =
     React.useState(true);
 
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  console.log(ECOM_API_URL);
+
+  const loginUser = async (data) => {
+    try {
+      let response = await fetch(`${ECOM_API_URL}/token/`, {
+        method: "post",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      let response_data = await response.json();
+      if (response.status === 200) {
+        console.log("success", response_data);
+      } else {
+        console.log("unable to login");
+      }
+    } catch (error) {
+      console.log("got error", error);
+    }
+  };
 
   const handleLogin = () => {
-    console.log("login data", email, password);
+    data = {
+      email: email,
+      password: password,
+    };
+    console.log("login data", data);
+    loginUser(data);
   };
 
   const handleForgotPass = () => {
@@ -74,7 +99,7 @@ function Login(props) {
         </Text>
       </View>
 
-      {showSign_With_Google_Facebook ? (
+      {showSignGoogleFacebook ? (
         <View style={styles.login_with_google_or_facebook}>
           <Pressable
             title="Login"
